@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Claudelle — A Book of Everything I Couldn't Say</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=IM+Fell+English:ital@0;1&family=Crimson+Pro:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f5f0e8;
+    --deep: #1a1410;
+    --ink: #2c2418;
+    --gold: #b8956a;
+    --blush: #d4a5a5;
+    --purple: #7c6b9e;
+    --purple-light: #c4b8d8;
+    --muted: #8a7d6e;
+    --page-bg: #faf7f2;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--deep);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    overflow-x: hidden;
+    padding: 20px;
+  }
+
+  /* Starfield background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 45%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 25%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 65%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 10%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 20% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 90%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 60%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(2px 2px at 75% 30%, rgba(196,184,216,0.5) 0%, transparent 100%),
+      radial-gradient(2px 2px at 15% 55%, rgba(196,184,216,0.4) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Book container */
+  .book-wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 680px;
+  }
+
+  /* Cover & pages */
+  .page {
+    display: none;
+    background: var(--page-bg);
+    min-height: 85vh;
+    border-radius: 4px 16px 16px 4px;
+    box-shadow:
+      -6px 0 20px rgba(0,0,0,0.5),
+      6px 0 30px rgba(0,0,0,0.3),
+      inset -3px 0 8px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+    animation: pageIn 0.6s ease forwards;
+  }
+
+  .page.active { display: block; }
+
+  @keyframes pageIn {
+    from { opacity: 0; transform: translateX(30px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* Page texture */
+  .page::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    opacity: 0.4;
+    z-index: 0;
+  }
+
+  /* Left spine accent */
+  .page::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background: linear-gradient(to right, rgba(0,0,0,0.15), transparent);
+  }
+
+  .page-inner {
+    position: relative;
+    z-index: 1;
+    padding: 60px 50px;
+    min-height: 85vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Cover page */
+  #cover {
+    background: linear-gradient(160deg, #1a1228 0%, #2d1f3d 40%, #1a1228 100%);
+    border-radius: 4px 16px 16px 4px;
+  }
+
+  #cover::before {
+    background: none;
+  }
+
+  #cover .page-inner {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 24px;
+  }
+
+  .cover-ornament {
+    font-size: 2rem;
+    color: var(--purple-light);
+    opacity: 0.8;
+    letter-spacing: 12px;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+
+  @keyframes shimmer {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  .cover-subtitle {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--purple-light);
+    opacity: 0.7;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .cover-title {
+    font-family: 'IM Fell English', serif;
+    font-size: clamp(2.2rem, 6vw, 3.5rem);
+    color: var(--cream);
+    line-height: 1.2;
+    text-shadow: 0 0 40px rgba(196,184,216,0.3);
+  }
+
+  .cover-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    color: var(--purple-light);
+    font-style: italic;
+    letter-spacing: 4px;
+  }
+
+  .cover-divider {
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--purple-light), transparent);
+    opacity: 0.6;
+  }
+
+  .cover-note {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    color: rgba(196,184,216,0.5);
+    font-size: 0.85rem;
+    max-width: 300px;
+    line-height: 1.8;
+    letter-spacing: 0.5px;
+  }
+
+  /* Bell flower decoration */
+  .bell-flower {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .flower-svg {
+    opacity: 0.7;
+    animation: sway 4s ease-in-out infinite;
+  }
+
+  .flower-svg:nth-child(2) { animation-delay: 0.5s; }
+  .flower-svg:nth-child(3) { animation-delay: 1s; }
+
+  @keyframes sway {
+    0%, 100% { transform: rotate(-3deg); }
+    50% { transform: rotate(3deg); }
+  }
+
+  /* Regular pages */
+  .page-number {
+    font-family: 'Crimson Pro', serif;
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .page-number::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, var(--muted), transparent);
+    opacity: 0.3;
+  }
+
+  .chapter-label {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--purple);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    opacity: 0.8;
+  }
+
+  .chapter-title {
+    font-family: 'IM Fell English', serif;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    color: var(--ink);
+    line-height: 1.3;
+    margin-bottom: 36px;
+  }
+
+  .chapter-title em {
+    color: var(--purple);
+    font-style: italic;
+  }
+
+  .body-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    line-height: 1.95;
+    color: #3d3028;
+    font-weight: 300;
+  }
+
+  .body-text + .body-text {
+    margin-top: 20px;
+  }
+
+  .body-text em {
+    font-style: italic;
+    color: var(--purple);
+  }
+
+  /* Pull quotes */
+  .pull-quote {
+    margin: 36px 0;
+    padding: 24px 30px;
+    border-left: 2px solid var(--purple-light);
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--purple);
+    line-height: 1.7;
+    background: linear-gradient(to right, rgba(196,184,216,0.08), transparent);
+  }
+
+  /* Poetry sections */
+  .poem {
+    margin: 36px auto;
+    max-width: 420px;
+    text-align: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    line-height: 2.1;
+    color: var(--ink);
+  }
+
+  .poem-line { display: block; }
+
+  .poem-break {
+    display: block;
+    height: 16px;
+  }
+
+  /* Small details */
+  .detail-list {
+    margin: 24px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1rem;
+    color: #3d3028;
+    line-height: 1.7;
+  }
+
+  .detail-item .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--purple-light);
+    margin-top: 10px;
+    flex-shrink: 0;
+  }
+
+  /* Section dividers */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 32px 0;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--muted), transparent);
+    opacity: 0.3;
+  }
+
+  .divider-symbol {
+    color: var(--purple-light);
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+
+  /* Page footer */
+  .page-footer {
+    margin-top: auto;
+    padding-top: 30px;
+    text-align: center;
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 0.8rem;
+    color: var(--muted);
+    opacity: 0.6;
+  }
+
+  /* Navigation */
+  .nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 24px;
+    padding: 0 10px;
+    gap: 16px;
+  }
+
+  .nav-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(196,184,216,0.25);
+    color: var(--purple-light);
+    padding: 12px 28px;
+    border-radius: 40px;
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+  }
+
+  .nav-btn:hover:not(:disabled) {
+    background: rgba(196,184,216,0.12);
+    border-color: rgba(196,184,216,0.5);
+    transform: translateY(-1px);
+  }
+
+  .nav-btn:disabled {
+    opacity: 0.2;
+    cursor: default;
+  }
+
+  .page-indicator {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    color: rgba(196,184,216,0.5);
+    font-size: 0.85rem;
+    letter-spacing: 2px;
+  }
+
+  /* Closing page special style */
+  .closing-accent {
+    font-size: 3rem;
+    color: var(--purple-light);
+    opacity: 0.4;
+    text-align: center;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .closing-signature {
+    font-family: 'IM Fell English', serif;
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--purple);
+    text-align: right;
+    margin-top: 40px;
+    padding-right: 30px;
+  }
+
+  .highlight-word {
+    color: var(--purple);
+    font-style: italic;
+  }
+
+  /* Responsive */
+  @media (max-width: 520px) {
+    .page-inner { padding: 40px 28px; }
+    .body-text { font-size: 1rem; }
+    .nav-btn { padding: 10px 18px; font-size: 0.8rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="book-wrapper">
+
+  <!-- COVER -->
+  <div id="cover" class="page active">
+    <div class="page-inner">
+      <div class="cover-subtitle">A Book of Everything</div>
+
+      <div class="bell-flower">
+        <svg class="flower-svg" width="28" height="48" viewBox="0 0 28 48" fill="none">
+          <path d="M14 48 C14 48 14 30 14 22" stroke="#c4b8d8" stroke-width="1.5"/>
+          <ellipse cx="8" cy="16" rx="7" ry="12" fill="#9d89c4" opacity="0.6" transform="rotate(-15 8 16)"/>
+          <ellipse cx="20" cy="14" rx="7" ry="12" fill="#b8a8d8" opacity="0.5" transform="rotate(15 20 14)"/>
+          <ellipse cx="14" cy="10" rx="7" ry="12" fill="#c4b8d8" opacity="0.7"/>
+        </svg>
+        <svg class="flower-svg" width="28" height="52" viewBox="0 0 28 52" fill="none">
+          <path d="M14 52 C14 52 14 32 14 24" stroke="#c4b8d8" stroke-width="1.5"/>
+          <ellipse cx="8" cy="18" rx="7" ry="13" fill="#9d89c4" opacity="0.55" transform="rotate(-12 8 18)"/>
+          <ellipse cx="20" cy="16" rx="7" ry="13" fill="#b8a8d8" opacity="0.5" transform="rotate(12 20 16)"/>
+          <ellipse cx="14" cy="11" rx="7" ry="13" fill="#c4b8d8" opacity="0.65"/>
+        </svg>
+        <svg class="flower-svg" width="28" height="46" viewBox="0 0 28 46" fill="none">
+          <path d="M14 46 C14 46 14 28 14 20" stroke="#c4b8d8" stroke-width="1.5"/>
+          <ellipse cx="9" cy="15" rx="7" ry="11" fill="#9d89c4" opacity="0.6" transform="rotate(-18 9 15)"/>
+          <ellipse cx="20" cy="13" rx="7" ry="11" fill="#b8a8d8" opacity="0.5" transform="rotate(18 20 13)"/>
+          <ellipse cx="14" cy="9" rx="7" ry="11" fill="#c4b8d8" opacity="0.7"/>
+        </svg>
+      </div>
+
+      <div class="cover-divider"></div>
+
+      <div class="cover-title">For Claudelle</div>
+
+      <div class="cover-name">— with everything I am —</div>
+
+      <div class="cover-divider"></div>
+
+      <div class="cover-ornament">✦ ✦ ✦</div>
+
+      <p class="cover-note">
+        Written in the quiet hours when missing you became too loud for silence alone.
+      </p>
+    </div>
+  </div>
+
+  <!-- PAGE 1: The Poems You Never Read -->
+  <div id="p1" class="page">
+    <div class="page-inner">
+      <div class="page-number">Chapter One</div>
+      <div class="chapter-label">On Loving in Secret</div>
+      <div class="chapter-title">The Poems <em>You'll Never Read</em></div>
+
+      <p class="body-text">
+        I've always wrote you in poems you'll never read. I kept your name in the folds of my quietest nights, where the world could not hear me loving you.
+      </p>
+
+      <p class="body-text">
+        I let every thought of you become a line, every ache become a stanza, every silence become a page. You lived in my words long before you ever lived in my life. I wrote you as if paper could carry what my mouth could not say — as if ink could become courage, as if poetry could find its way to you when I could not.
+      </p>
+
+      <div class="divider"><span class="divider-symbol">✦</span></div>
+
+      <div class="poem">
+        <span class="poem-line">There are feelings too fragile for confession,</span>
+        <span class="poem-line">too tender for daylight.</span>
+        <span class="poem-break"></span>
+        <span class="poem-line">So I hid them in metaphors,</span>
+        <span class="poem-line">in soft beginnings</span>
+        <span class="poem-line">and unfinished endings,</span>
+        <span class="poem-line">in the kind of verses</span>
+        <span class="poem-line">that tremble like a held breath.</span>
+        <span class="poem-break"></span>
+        <span class="poem-line">I loved you in secret,</span>
+        <span class="poem-line">and my poems became</span>
+        <span class="poem-line">the only place that love was free.</span>
+      </div>
+
+      <div class="divider"><span class="divider-symbol">✦</span></div>
+
+      <p class="body-text">
+        You held a version of me that still hoped, still waited, still believed that maybe one day you would turn the page and finally know. You were still there in every poem, every pause, every piece of me that could not let go.
+      </p>
+
+      <div class="page-footer">for claudelle — i</div>
+    </div>
+  </div>
+
+  <!-- PAGE 2: I Chose to Yearn -->
+  <div id="p2" class="page">
+    <div class="page-inner">
+      <div class="page-number">Chapter Two</div>
+      <div class="chapter-label">On Choosing You</div>
+      <div class="chapter-title">I <em>Chose</em> to Yearn for You</div>
+
+      <p class="body-text">
+        I still love you — even without conversation again, even if we act like strangers. I still want you to come back. I hope one day we can try again.
+      </p>
+
+      <div class="pull-quote">
+        "You wanted me, but never kept me. You wanted me — and I wanted you too. We felt the same thing. We had something real. But somehow, that still wasn't enough."
+      </div>
+
+      <p class="body-text">
+        Because I chose you fully, completely, without hesitation. And you… you only wanted me until it got hard to stay. I gave you everything I could — every part of me that knew how to love. But it still wasn't enough to make you keep me. And that's what hurts the most — not that you didn't feel anything, but that you felt it, and still let me go.
+      </p>
+
+      <div class="divider"><span class="divider-symbol">✦</span></div>
+
+      <p class="body-text">
+        I would have stayed, even when things got difficult. I would have stayed through all of it. But you — you wanted me, just not enough to keep me.
+      </p>
+
+      <div class="poem">
+        <span class="poem-line">I wished I was enough.</span>
+        <span class="poem-break"></span>
+        <span class="poem-line">I know you wouldn't settle for less.</span>
+        <span class="poem-line">And my intention is still the same —</span>
+        <span class="poem-line">to treat you the way</span>
+        <span class="poem-line">you've always deserved.</span>
+      </div>
+
+      <div class="page-footer">for claudelle — ii</div>
+    </div>
+  </div>
+
+  <!-- PAGE 3: My Shortcomings -->
+  <div id="p3" class="page">
+    <div class="page-inner">
+      <div class="page-number">Chapter Three</div>
+      <div class="chapter-label">On What I Failed to Give</div>
+      <div class="chapter-title">The Flowers <em>I Should Have Brought</em></div>
+
+      <p class="body-text">
+        I know I wasn't the person who planned the dates. I know there were flowers that needed to be asked for, that shouldn't have to be asked for. I know you waited — for messages, for updates, for the little things that let someone know they're thought of. And I was quiet when I should have spoken.
+      </p>
+
+      <p class="body-text">
+        Busyness was never a good enough reason. It never is. A person who is waiting for you deserves more than silence. They deserve to know they are still held in your mind while you carry the world. I know that now. I wish I'd known it then.
+      </p>
+
+      <div class="divider"><span class="divider-symbol">✦</span></div>
+
+      <div class="pull-quote">
+        "Consistency speaks louder than both words and actions. And I wasn't consistent. That is my fault — not yours."
+      </div>
+
+      <p class="body-text">
+        There were moments I settled into a version of myself that wasn't worthy of you — not because I stopped loving you, but because my life was falling at the same time, and I didn't know how to hold both. I let the weight of everything pull me under, and in doing so, I let go of small moments that mattered more than I realized.
+      </p>
+
+      <p class="body-text">
+        I'm sorry for every time you waited. I'm sorry for every flower that was never brought without asking. I'm sorry for every silence that felt like distance, even when my heart had not moved an inch from you.
+      </p>
+
+      <div class="page-footer">for claudelle — iii</div>
+    </div>
+  </div>
+
+  <!-- PAGE 4: The Misunderstanding -->
+  <div id="p4" class="page">
+    <div class="page-inner">
+      <div class="page-number">Chapter Four</div>
+      <div class="chapter-label">On What Was Never True</div>
+      <div class="chapter-title">The Thing <em>That Never Happened</em></div>
+
+      <p class="body-text">
+        I need you to know — I did not betray you. What you believed happened, did not happen. I did not go to someone else. I did not choose another. The fear that I might have, the thought that I was capable of hurting you that way — I understand why it lived in your mind. Overthinking is its own kind of pain, and I know yours came from a place of caring.
+      </p>
+
+      <p class="body-text">
+        But I want to give you the answers. Not to win, not to be right — but because you deserve clarity where there was confusion. Everything that felt like a sign of something wrong was only misread in a painful moment. And painful moments have a way of making the untrue feel certain.
+      </p>
+
+      <div class="divider"><span class="divider-symbol">✦</span></div>
+
+      <div class="pull-quote">
+        "I want to stand in the rain with you. I want to give you the truth that sets down the weight you've been carrying."
+      </div>
+
+      <p class="body-text">
+        What separated us was not the presence of betrayal. It was the absence of enough communication, enough reassurance, enough of me showing up in the small ways that would have stopped the fear from growing. That is the real answer. And I am sorry it took this much distance to say it clearly.
+      </p>
+
+      <p class="body-text">
+        I know you know where I am. I know you know how to reach me. Whenever you are ready — if you are ever ready — I will be here.
+      </p>
+
+      <div class="page-footer">for claudelle — iv</div>
+    </div>
+  </div>
+
+  <!-- PAGE 5: Things I Love About You -->
+  <div id="p5" class="page">
+    <div class="page-inner">
+      <div class="page-number">Chapter Five</div>
+      <div class="chapter-label">On Knowing You</div>
+      <div class="chapter-title">Everything I <em>Carry of You</em></div>
+
+      <p class="body-text">
+        Let me tell you what I see, because I see everything.
+      </p>
+
+      <div class="detail-list">
+        <div class="detail-item">
+          <div class="dot"></div>
+          <div>I know you love <span class="highlight-word">purple</span> — and bell flowers, those soft little hanging things that look like the color of dusk.</div>
+        </div>
+        <div class="detail-item">
+          <div class="dot"></div>
+          <div>I know you love attention given with love — not performed, but <span class="highlight-word">felt</span>. The kind that makes you soften.</div>
+        </div>
+        <div class="detail-item">
+          <div class="dot"></div>
+          <div>I know you love cookies and cream ice cream. I know that small sweetness matters to you.</div>
+        </div>
+        <div class="detail-item">
+          <div class="dot"></div>
+          <div>I know when things get hard, you still do them. You carry your stress quietly and push through anyway.</div>
+        </div>
+        <div class="detail-item">
+          <div class="dot"></div>
+          <div>I love your eyes when sunlight hits them and shows that dark brown underneath — that color is my favorite now. My favorite thing to admire.</div>
+        </div>
+        <div class="detail-item">
+          <div class="dot"></div>
+          <div>I love when your eyes <span class="highlight-word">smile before your mouth does</span>. I have wished so many times that I could kiss them.</div>
+        </div>
+      </div>
+
+      <div class="divider"><span class="divider-symbol">✦</span></div>
+
+      <p class="body-text">
+        From now on — whenever I think of something pretty, I will count you first. You are the measure of beautiful things.
+      </p>
+
+      <div class="page-footer">for claudelle — v</div>
+    </div>
+  </div>
+
+  <!-- PAGE 6: What I Miss -->
+  <div id="p6" class="page">
+    <div class="page-inner">
+      <div class="page-number">Chapter Six</div>
+      <div class="chapter-label">On Missing You</div>
+      <div class="chapter-title">I <em>Miss Us</em> the Most</div>
+
+      <p class="body-text">
+        I miss our late-night talks that lasted until we didn't notice the time. The random conversations that made no sense but felt like the most important thing in the world. I miss the laughter on calls — the kind that came from nowhere and turned into something neither of us could stop.
+      </p>
+
+      <p class="body-text">
+        I miss simpleng kumain kasama ka — something as ordinary as a meal that became everything just because you were there. I miss the chikahan. The inside jokes. The comfort of knowing that at the end of the day, I had <em>you</em> to talk to.
+      </p>
+
+      <div class="divider"><span class="divider-symbol">✦</span></div>
+
+      <div class="poem">
+        <span class="poem-line">I catch myself scrolling back</span>
+        <span class="poem-line">through old messages,</span>
+        <span class="poem-line">smiling at what we used to be,</span>
+        <span class="poem-line">wishing I could call you</span>
+        <span class="poem-line">just like before.</span>
+        <span class="poem-break"></span>
+        <span class="poem-line">I need you to need me back.</span>
+        <span class="poem-line">I know we can still fix this.</span>
+        <span class="poem-line">I wish you would let us try.</span>
+      </div>
+
+      <div class="divider"><span class="divider-symbol">✦</span></div>
+
+      <p class="body-text">
+        Even in the middle of your conscious decision to step away — I understand it. I don't fight it. I only hope that understanding can find its way back to you too. And I hope you know: whenever you're ready, nothing in me will have moved.
+      </p>
+
+      <div class="page-footer">for claudelle — vi</div>
+    </div>
+  </div>
+
+  <!-- PAGE 7: Promises & Wishes -->
+  <div id="p7" class="page">
+    <div class="page-inner">
+      <div class="page-number">Chapter Seven</div>
+      <div class="chapter-label">On What I Promise</div>
+      <div class="chapter-title">What I Wish <em>For Us</em></div>
+
+      <p class="body-text">
+        If we ever find our way back — and I still believe we might — here is what I carry as truth for us:
+      </p>
+
+      <div class="detail-list">
+        <div class="detail-item">
+          <div class="dot"></div>
+          <div>I wish we bring up small things early, calmly — because resentment builds when silence becomes a habit.</div>
+        </div>
+        <div class="detail-item">
+          <div class="dot"></div>
+          <div>I wish we notice what actually makes each other soften — not just what we think love looks like, but what lands.</div>
+        </div>
+        <div class="detail-item">
+          <div class="dot"></div>
+          <div>I wish we keep doing the small things consistently. Relationships don't fail from one big moment. They fade when effort becomes occasional instead of normal.</div>
+        </div>
+        <div class="detail-item">
+          <div class="dot"></div>
+          <div>I wish we remember — it's not you versus me. It's both of us, together, versus the problem.</div>
+        </div>
+        <div class="detail-item">
+          <div class="dot"></div>
+          <div>I wish we give space without creating tension. Sometimes people need to reset, not disconnect. Distance is not always disinterest.</div>
+        </div>
+        <div class="detail-item">
+          <div class="dot"></div>
+          <div>I promise to update you. To never let you wait in silence for hours wondering. You will always know where I am.</div>
+        </div>
+      </div>
+
+      <div class="pull-quote">
+        "I'm not perfect. But I promise to always give my best — to be honest and open with you, and to never give up on us or make you question how deeply you are loved."
+      </div>
+
+      <div class="page-footer">for claudelle — vii</div>
+    </div>
+  </div>
+
+  <!-- PAGE 8: The Closing Letter -->
+  <div id="p8" class="page">
+    <div class="page-inner">
+      <div class="page-number">Final Chapter</div>
+      <div class="chapter-label">On Everything That Remains</div>
+      <div class="chapter-title">Still Here. <em>Still Yours.</em></div>
+
+      <p class="body-text">
+        I know my pain took over sometimes and made me forget the pain you were carrying. I'm sorry for every moment my silence made you feel like you didn't matter. <em>You matter.</em> You have always mattered — more than I knew how to say in the moments it counted most.
+      </p>
+
+      <p class="body-text">
+        I have never wanted anyone the way I want you. Not in the casual sense. In the kind of way where you realize — why would I look for someone better, when you are already enough for me? You are not a placeholder. You are not a convenience. You are the person I chose fully, and I would choose you again.
+      </p>
+
+      <div class="divider"><span class="divider-symbol">✦</span></div>
+
+      <div class="poem">
+        <span class="poem-line">I could never really love another soul</span>
+        <span class="poem-line">the way I love yours.</span>
+        <span class="poem-break"></span>
+        <span class="poem-line">From the bottom of my heart —</span>
+        <span class="poem-line">that is not poetry.</span>
+        <span class="poem-line">That is just the truth.</span>
+      </div>
+
+      <div class="divider"><span class="divider-symbol">✦</span></div>
+
+      <p class="body-text">
+        Please hug me when you see me. Please show me the love you've been hiding — love it loudly with me. Tell me when things go wrong. Open to me when things get difficult.
+      </p>
+
+      <p class="body-text">
+        I will be here. I have been here. I am not going anywhere.
+      </p>
+
+      <div class="closing-signature">— with all of me, always 💜</div>
+
+      <div class="page-footer">for claudelle — the end, and also the beginning</div>
+    </div>
+  </div>
+
+</div><!-- /book-wrapper -->
+
+<!-- Navigation -->
+<div class="nav-bar">
+  <button class="nav-btn" id="prevBtn" onclick="changePage(-1)" disabled>← Back</button>
+  <span class="page-indicator" id="pageIndicator">Cover</span>
+  <button class="nav-btn" id="nextBtn" onclick="changePage(1)">Next →</button>
+</div>
+
+<script>
+  const pages = ['cover','p1','p2','p3','p4','p5','p6','p7','p8'];
+  const labels = ['Cover','I','II','III','IV','V','VI','VII','VIII'];
+  let current = 0;
+
+  function changePage(dir) {
+    document.getElementById(pages[current]).classList.remove('active');
+    current = Math.max(0, Math.min(pages.length - 1, current + dir));
+    document.getElementById(pages[current]).classList.add('active');
+    document.getElementById('pageIndicator').textContent = labels[current];
+    document.getElementById('prevBtn').disabled = current === 0;
+    document.getElementById('nextBtn').disabled = current === pages.length - 1;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Keyboard nav
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' && current < pages.length - 1) changePage(1);
+    if (e.key === 'ArrowLeft' && current > 0) changePage(-1);
+  });
+
+  // Touch swipe
+  let startX = 0;
+  document.addEventListener('touchstart', e => startX = e.touches[0].clientX);
+  document.addEventListener('touchend', e => {
+    const diff = startX - e.changedTouches[0].clientX;
+    if (Math.abs(diff) > 50) changePage(diff > 0 ? 1 : -1);
+  });
+</script>
+</body>
+</html>
